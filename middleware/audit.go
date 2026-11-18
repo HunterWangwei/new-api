@@ -47,6 +47,13 @@ var auditRouteActions = map[string]string{
 	"DELETE /api/user/:id/reset_passkey":               "user.reset_passkey",
 	"DELETE /api/user/:id/oauth/bindings/:provider_id": "user.oauth_unbind",
 
+	// 发票（管理员）
+	"POST /api/user/invoice/:id/issue":                 "invoice.issue",
+	"POST /api/user/invoice/:id/reject":                "invoice.reject",
+	"POST /api/user/invoice/:id/void":                  "invoice.void",
+	"POST /api/user/invoice/verifications/:id/approve": "invoice.verification_approve",
+	"POST /api/user/invoice/verifications/:id/reject":  "invoice.verification_reject",
+
 	// 系统设置（root）
 	"POST /api/option/payment_compliance":       "option.payment_compliance",
 	"POST /api/option/rest_model_ratio":         "option.reset_ratio",

@@ -283,6 +283,14 @@ export const STATIC_I18N_KEYS = [
   'Failed to delete user',
   'No user selected',
 
+  // Invoices
+  'Pending review',
+  'Issued',
+  'Rejected',
+  'Voided',
+  'Company',
+  'Verified',
+
   // Redemption codes
   'Unused',
   'Disabled',

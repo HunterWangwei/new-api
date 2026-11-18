@@ -537,6 +537,12 @@ const AUDIT_TEMPLATES: Record<string, string> = {
   'redemption.update': 'Updated a redemption code',
   'redemption.delete': 'Deleted a redemption code',
   'redemption.delete_invalid': 'Deleted invalid redemption codes',
+  // Invoices
+  'invoice.issue': 'Issued an invoice',
+  'invoice.reject': 'Rejected an invoice application',
+  'invoice.void': 'Voided an invoice',
+  'invoice.verification_approve': 'Approved an invoice identity verification',
+  'invoice.verification_reject': 'Rejected an invoice identity verification',
   // Prefill groups
   'prefill_group.create': 'Created a prefill group',
   'prefill_group.update': 'Updated a prefill group',

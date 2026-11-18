@@ -72,6 +72,12 @@ email.security_event.email_confirmed: "邮箱地址已确认"
 email.security_event.login_linked: "已绑定登录账号 {{.Provider}}"
 email.security_event.login_unlinked: "已解绑登录账号"
 email.security_event.wechat_linked: "已绑定微信账号"
+email.invoice.issued_subject: "{{.SystemName}}发票已开具"
+email.invoice.issued_body: "您的开票申请 #{{.Id}}（¥{{.Amount}}）已开具，发票号码 {{.InvoiceNo}}，请在「发票」页面下载。"
+email.invoice.rejected_subject: "{{.SystemName}}开票申请已驳回"
+email.invoice.rejected_body: "您的开票申请 #{{.Id}}（¥{{.Amount}}）已被驳回，原因：{{.Reason}}。相关订单可以重新申请开票。"
+email.invoice.voided_subject: "{{.SystemName}}发票已作废"
+email.invoice.voided_body: "开票申请 #{{.Id}}（¥{{.Amount}}）对应的发票 {{.InvoiceNo}} 已作废，相关订单可以重新申请开票。"
 
 # Low-quota notices
 notify.quota_low_title: "您的额度即将用尽"

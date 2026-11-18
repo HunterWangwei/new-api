@@ -134,6 +134,14 @@ func SetApiRouter(router *gin.Engine) {
 				selfRoute.POST("/aff_transfer", middleware.UserCriticalRateLimit("aff-transfer"), controller.TransferAffQuota)
 				selfRoute.PUT("/setting", controller.UpdateUserSetting)
 
+				// Invoice routes
+				selfRoute.GET("/invoice/verification", controller.GetInvoiceVerification)
+				selfRoute.POST("/invoice/verification", middleware.CriticalRateLimit(), controller.SubmitInvoiceVerification)
+				selfRoute.GET("/invoice/eligible", controller.GetInvoiceEligibleTopUps)
+				selfRoute.GET("/invoice/self", controller.GetUserInvoices)
+				selfRoute.POST("/invoice", middleware.CriticalRateLimit(), controller.ApplyInvoice)
+				selfRoute.GET("/invoice/:id/file", controller.DownloadInvoiceFile)
+
 				// 2FA routes
 				selfRoute.GET("/2fa/status", controller.Get2FAStatus)
 				selfRoute.POST("/2fa/setup", middleware.UserCriticalRateLimit("security-verification"), middleware.DisableCache(), controller.Setup2FA)
@@ -156,6 +164,13 @@ func SetApiRouter(router *gin.Engine) {
 				adminRoute.GET("/", controller.GetAllUsers)
 				adminRoute.GET("/topup", controller.GetAllTopUps)
 				adminRoute.POST("/topup/complete", controller.AdminCompleteTopUp)
+				adminRoute.GET("/invoice", controller.GetAllInvoices)
+				adminRoute.POST("/invoice/:id/issue", controller.IssueInvoice)
+				adminRoute.POST("/invoice/:id/reject", controller.RejectInvoice)
+				adminRoute.POST("/invoice/:id/void", controller.VoidInvoice)
+				adminRoute.GET("/invoice/verifications", controller.GetInvoiceVerifications)
+				adminRoute.POST("/invoice/verifications/:id/approve", controller.ApproveInvoiceVerification)
+				adminRoute.POST("/invoice/verifications/:id/reject", controller.RejectInvoiceVerification)
 				adminRoute.GET("/search", controller.SearchUsers)
 				adminRoute.GET("/:id/oauth/bindings", controller.GetUserOAuthBindingsByAdmin)
 				adminRoute.DELETE("/:id/oauth/bindings/:provider_id", controller.UnbindCustomOAuthByAdmin)

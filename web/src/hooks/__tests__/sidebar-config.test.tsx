@@ -104,7 +104,7 @@ describe('security sidebar visibility', () => {
       result.current
         .find((group) => group.id === 'personal')
         ?.items.map((item) => item.title)
-    ).toEqual(['Wallet', 'Profile', 'Security & Access'])
+    ).toEqual(['Wallet', 'Invoices', 'Profile', 'Security & Access'])
     expect(
       result.current
         .flatMap((group) => group.items)
@@ -127,6 +127,17 @@ describe('security sidebar visibility', () => {
       ).toBe(false)
     }
   )
+  it('disabling the top-up module hides Invoices together with Wallet', () => {
+    const { result } = sidebarFor(
+      { personal: { enabled: true, personal: true, topup: false } },
+      undefined
+    )
+    const titles = result.current
+      .find((group) => group.id === 'personal')
+      ?.items.map((item) => item.title)
+    expect(titles).not.toContain('Wallet')
+    expect(titles).not.toContain('Invoices')
+  })
   it('users without sidebar configuration permission retain the admin view', () => {
     const { result } = sidebarFor(
       undefined,

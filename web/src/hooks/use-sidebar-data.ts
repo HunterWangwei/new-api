@@ -21,6 +21,7 @@ import {
   Box,
   ClipboardList,
   CreditCard,
+  FileCheck2,
   FileText,
   FlaskConical,
   Key,
@@ -29,6 +30,7 @@ import {
   MessageSquare,
   PlugZap,
   Radio,
+  ReceiptText,
   ServerCog,
   Settings,
   ShieldCheck,
@@ -118,6 +120,11 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             icon: Wallet,
           },
           {
+            title: t('Invoices'),
+            url: '/invoices',
+            icon: ReceiptText,
+          },
+          {
             title: t('Profile'),
             url: '/profile',
             icon: User,
@@ -157,6 +164,11 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             title: t('Subscriptions'),
             url: '/subscriptions',
             icon: CreditCard,
+          },
+          {
+            title: t('Invoice Management'),
+            url: '/invoice-management',
+            icon: FileCheck2,
           },
           {
             title: t('System Info'),
