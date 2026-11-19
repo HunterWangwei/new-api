@@ -45,7 +45,6 @@ function Fixture() {
             QuotaForInviter: 0,
             QuotaForInvitee: 0,
             TopUpLink: '',
-            InvoiceSupportContact: '',
             quota_setting: {
               enable_free_model_pre_consume: true,
               trust_quota_usd: 10,

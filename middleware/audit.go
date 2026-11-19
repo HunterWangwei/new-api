@@ -54,6 +54,10 @@ var auditRouteActions = map[string]string{
 	"POST /api/user/invoice/verifications/:id/approve": "invoice.verification_approve",
 	"POST /api/user/invoice/verifications/:id/reject":  "invoice.verification_reject",
 
+	// 工单（管理员）
+	"POST /api/user/ticket/:id/reply": "ticket.reply",
+	"POST /api/user/ticket/:id/close": "ticket.close",
+
 	// 系统设置（root）
 	"POST /api/option/payment_compliance":       "option.payment_compliance",
 	"POST /api/option/rest_model_ratio":         "option.reset_ratio",

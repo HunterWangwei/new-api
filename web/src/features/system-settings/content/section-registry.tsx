@@ -24,6 +24,7 @@ import { ChatSettingsSection } from './chat-settings-section'
 import { DashboardSection } from './dashboard-section'
 import { DrawingSettingsSection } from './drawing-settings-section'
 import { FAQSection } from './faq-section'
+import { TicketSettingsSection } from './ticket-settings-section'
 import { UptimeKumaSection } from './uptime-kuma-section'
 
 /**
@@ -113,6 +114,16 @@ const CONTENT_SECTIONS = [
           MjModeClearEnabled: settings.MjModeClearEnabled,
           MjActionCheckSuccessEnabled: settings.MjActionCheckSuccessEnabled,
         }}
+      />
+    ),
+  },
+  {
+    id: 'tickets',
+    titleKey: 'Tickets',
+    build: (settings: ContentSettings) => (
+      <TicketSettingsSection
+        categories={settings['ticket_setting.categories']}
+        autoCloseDays={settings['ticket_setting.auto_close_days']}
       />
     ),
   },

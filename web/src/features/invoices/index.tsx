@@ -84,7 +84,6 @@ export function Invoices() {
             {myVerification.isSuccess && (
               <VerificationStatusCard
                 verification={verification}
-                supportContact={myVerification.data.supportContact}
                 onEdit={() => setVerificationOpen(true)}
               />
             )}

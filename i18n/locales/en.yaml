@@ -77,6 +77,8 @@ email.invoice.rejected_subject: "{{.SystemName}} — Your invoice application wa
 email.invoice.rejected_body: "Your invoice application #{{.Id}} (CNY {{.Amount}}) was rejected. Reason: {{.Reason}}. The orders can be included in a new application."
 email.invoice.voided_subject: "{{.SystemName}} — Your invoice has been voided"
 email.invoice.voided_body: "Invoice {{.InvoiceNo}} for application #{{.Id}} (CNY {{.Amount}}) has been voided. The orders can be included in a new application."
+email.ticket.reply_subject: "{{.SystemName}} — New reply to ticket #{{.Id}}"
+email.ticket.reply_body: "Customer service replied to your ticket #{{.Id}} \"{{.Title}}\". Sign in and open Tickets to read it."
 
 # Low-quota notices
 notify.quota_low_title: "Your quota is running low"

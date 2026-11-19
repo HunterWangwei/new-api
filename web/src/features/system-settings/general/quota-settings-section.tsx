@@ -35,7 +35,6 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
 import { formatQuota } from '@/lib/format'
 
 import { FormDirtyIndicator } from '../components/form-dirty-indicator'
@@ -57,7 +56,6 @@ const quotaSchema = z.object({
   QuotaForInviter: z.coerce.number().min(0),
   QuotaForInvitee: z.coerce.number().min(0),
   TopUpLink: z.string(),
-  InvoiceSupportContact: z.string().max(500),
   quota_setting: z.object({
     enable_free_model_pre_consume: z.boolean(),
     trust_quota_usd: z.preprocess(
@@ -321,28 +319,6 @@ export function QuotaSettingsSection({
                   </FormControl>
                   <FormDescription>
                     {t('External link for users to purchase quota')}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='InvoiceSupportContact'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('Invoice verification contact')}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder={t('e.g. WeChat: example, QQ group: 123456')}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    {t(
-                      'Shown to users after they submit identity verification for invoicing'
-                    )}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

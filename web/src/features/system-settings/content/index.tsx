@@ -43,6 +43,8 @@ const defaultContentSettings: ContentSettings = {
   MjForwardUrlEnabled: false,
   MjModeClearEnabled: false,
   MjActionCheckSuccessEnabled: false,
+  'ticket_setting.categories': '[]',
+  'ticket_setting.auto_close_days': 7,
 }
 
 function resolveContentSettings(

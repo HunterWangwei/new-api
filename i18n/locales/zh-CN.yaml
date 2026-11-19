@@ -78,6 +78,8 @@ email.invoice.rejected_subject: "{{.SystemName}}开票申请已驳回"
 email.invoice.rejected_body: "您的开票申请 #{{.Id}}（¥{{.Amount}}）已被驳回，原因：{{.Reason}}。相关订单可以重新申请开票。"
 email.invoice.voided_subject: "{{.SystemName}}发票已作废"
 email.invoice.voided_body: "开票申请 #{{.Id}}（¥{{.Amount}}）对应的发票 {{.InvoiceNo}} 已作废，相关订单可以重新申请开票。"
+email.ticket.reply_subject: "{{.SystemName}}工单 #{{.Id}} 有新回复"
+email.ticket.reply_body: "客服已回复您的工单 #{{.Id}}「{{.Title}}」，请登录后在「工单」页面查看。"
 
 # Low-quota notices
 notify.quota_low_title: "您的额度即将用尽"

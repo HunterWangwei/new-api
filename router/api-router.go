@@ -142,6 +142,14 @@ func SetApiRouter(router *gin.Engine) {
 				selfRoute.POST("/invoice", middleware.CriticalRateLimit(), controller.ApplyInvoice)
 				selfRoute.GET("/invoice/:id/file", controller.DownloadInvoiceFile)
 
+				// Ticket routes
+				selfRoute.GET("/ticket/options", controller.GetTicketOptions)
+				selfRoute.GET("/ticket/self", controller.GetUserTickets)
+				selfRoute.POST("/ticket", middleware.UserCriticalRateLimit("ticket"), controller.CreateTicket)
+				selfRoute.GET("/ticket/self/:id", controller.GetUserTicket)
+				selfRoute.POST("/ticket/self/:id/reply", middleware.UserCriticalRateLimit("ticket"), controller.ReplyUserTicket)
+				selfRoute.POST("/ticket/self/:id/close", controller.CloseUserTicket)
+
 				// 2FA routes
 				selfRoute.GET("/2fa/status", controller.Get2FAStatus)
 				selfRoute.POST("/2fa/setup", middleware.UserCriticalRateLimit("security-verification"), middleware.DisableCache(), controller.Setup2FA)
@@ -171,6 +179,11 @@ func SetApiRouter(router *gin.Engine) {
 				adminRoute.GET("/invoice/verifications", controller.GetInvoiceVerifications)
 				adminRoute.POST("/invoice/verifications/:id/approve", controller.ApproveInvoiceVerification)
 				adminRoute.POST("/invoice/verifications/:id/reject", controller.RejectInvoiceVerification)
+				adminRoute.GET("/ticket", controller.GetAllTickets)
+				adminRoute.GET("/ticket/pending_count", controller.GetTicketPendingCount)
+				adminRoute.GET("/ticket/:id", controller.GetAdminTicket)
+				adminRoute.POST("/ticket/:id/reply", controller.ReplyAdminTicket)
+				adminRoute.POST("/ticket/:id/close", controller.CloseAdminTicket)
 				adminRoute.GET("/search", controller.SearchUsers)
 				adminRoute.GET("/:id/oauth/bindings", controller.GetUserOAuthBindingsByAdmin)
 				adminRoute.DELETE("/:id/oauth/bindings/:provider_id", controller.UnbindCustomOAuthByAdmin)

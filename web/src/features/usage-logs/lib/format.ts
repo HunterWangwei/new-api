@@ -543,6 +543,9 @@ const AUDIT_TEMPLATES: Record<string, string> = {
   'invoice.void': 'Voided an invoice',
   'invoice.verification_approve': 'Approved an invoice identity verification',
   'invoice.verification_reject': 'Rejected an invoice identity verification',
+  // Tickets
+  'ticket.reply': 'Replied to a ticket',
+  'ticket.close': 'Closed a ticket',
   // Prefill groups
   'prefill_group.create': 'Created a prefill group',
   'prefill_group.update': 'Updated a prefill group',

@@ -224,6 +224,8 @@ export type ContentSettings = {
   MjForwardUrlEnabled: boolean
   MjModeClearEnabled: boolean
   MjActionCheckSuccessEnabled: boolean
+  'ticket_setting.categories': string
+  'ticket_setting.auto_close_days': number
 }
 
 export type ModelSettings = {
@@ -275,7 +277,6 @@ export type BillingSettings = {
   QuotaForInviter: number
   QuotaForInvitee: number
   TopUpLink: string
-  InvoiceSupportContact: string
   'quota_setting.enable_free_model_pre_consume': boolean
   'quota_setting.trust_quota_usd': number
   'quota_setting.pre_consume_multiplier': number

@@ -86,9 +86,7 @@ export function VerificationFormDialog(props: VerificationFormDialogProps) {
       await queryClient.invalidateQueries({
         queryKey: invoiceQueryKeys.myVerification(),
       })
-      toast.success(
-        t('Verification submitted. Contact customer service for manual review.')
-      )
+      toast.success(t('Verification submitted and waiting for review.'))
       props.onOpenChange(false)
     },
     onError: (error) => handleServerError(error),

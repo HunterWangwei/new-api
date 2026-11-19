@@ -95,6 +95,9 @@ const (
 	MsgEmailInvoiceRejectedBody    = "email.invoice.rejected_body"
 	MsgEmailInvoiceVoidedSubject   = "email.invoice.voided_subject"
 	MsgEmailInvoiceVoidedBody      = "email.invoice.voided_body"
+
+	MsgEmailTicketReplySubject = "email.ticket.reply_subject"
+	MsgEmailTicketReplyBody    = "email.ticket.reply_body"
 )
 
 // Low-quota notices, in the recipient's saved language

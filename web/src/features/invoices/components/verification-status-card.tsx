@@ -16,7 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { ShieldCheck } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { MessageSquarePlus, ShieldCheck } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { StatusBadge } from '@/components/status-badge'
@@ -36,7 +37,6 @@ import type { InvoiceVerification } from '../types'
 
 type VerificationStatusCardProps = {
   verification: InvoiceVerification | null
-  supportContact: string
   onEdit: () => void
 }
 
@@ -86,16 +86,18 @@ export function VerificationStatusCard(props: VerificationStatusCardProps) {
           <>
             <p>
               {t(
-                'Verification submitted. Contact customer service for manual review.'
+                'Verification submitted and waiting for review. Submit a ticket if you need to add information.'
               )}
             </p>
-            {props.supportContact && (
-              <p className='text-foreground whitespace-pre-line'>
-                {t('Customer service: {{contact}}', {
-                  contact: props.supportContact,
-                })}
-              </p>
-            )}
+            <Button
+              size='sm'
+              variant='outline'
+              className='mt-1 gap-1.5'
+              render={<Link to='/tickets' search={{ create: 'invoice' }} />}
+            >
+              <MessageSquarePlus className='size-4' aria-hidden='true' />
+              {t('Submit ticket')}
+            </Button>
           </>
         )}
         {verification.status === 'rejected' && (

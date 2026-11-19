@@ -57,7 +57,6 @@ export interface InvoiceVerificationInput {
 
 export interface MyInvoiceVerification {
   verification: InvoiceVerification | null
-  support_contact: string
 }
 
 export interface Invoice {

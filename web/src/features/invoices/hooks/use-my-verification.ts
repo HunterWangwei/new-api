@@ -29,7 +29,6 @@ export function useMyVerification() {
     queryFn: async () => requireServerSuccess(await getMyInvoiceVerification()),
     select: (response) => ({
       verification: response.data?.verification ?? null,
-      supportContact: response.data?.support_contact ?? '',
     }),
   })
 }

@@ -59,10 +59,7 @@ func newInvoiceVerificationView(verification *model.InvoiceVerification) *invoic
 }
 
 func invoiceVerificationResponse(c *gin.Context, verification *model.InvoiceVerification) {
-	common.ApiSuccess(c, gin.H{
-		"verification":    newInvoiceVerificationView(verification),
-		"support_contact": common.InvoiceSupportContact,
-	})
+	common.ApiSuccess(c, gin.H{"verification": newInvoiceVerificationView(verification)})
 }
 
 func GetInvoiceVerification(c *gin.Context) {

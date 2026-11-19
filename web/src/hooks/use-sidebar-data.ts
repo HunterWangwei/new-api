@@ -24,7 +24,9 @@ import {
   FileCheck2,
   FileText,
   FlaskConical,
+  Headset,
   Key,
+  LifeBuoy,
   LayoutDashboard,
   ListTodo,
   MessageSquare,
@@ -125,6 +127,11 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             icon: ReceiptText,
           },
           {
+            title: t('Tickets'),
+            url: '/tickets',
+            icon: LifeBuoy,
+          },
+          {
             title: t('Profile'),
             url: '/profile',
             icon: User,
@@ -169,6 +176,12 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             title: t('Invoice Management'),
             url: '/invoice-management',
             icon: FileCheck2,
+          },
+          {
+            title: t('Ticket Management'),
+            url: '/ticket-management',
+            icon: Headset,
+            badge: badges.ticketPending,
           },
           {
             title: t('System Info'),

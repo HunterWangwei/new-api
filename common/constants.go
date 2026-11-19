@@ -17,10 +17,6 @@ var Footer = ""
 var Logo = ""
 var TopUpLink = ""
 
-// InvoiceSupportContact is shown to users after they submit invoice identity
-// verification, telling them how to reach customer service for the review.
-var InvoiceSupportContact = ""
-
 // var ChatLink = ""
 // var ChatLink2 = ""
 var QuotaPerUnit = 500 * 1000.0 // $0.002 / 1K tokens

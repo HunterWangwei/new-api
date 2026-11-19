@@ -63,18 +63,25 @@
 | 项目 | 内容 |
 | --- | --- |
 | 基于的官方版本 | `v1.0.0-rc.51`（commit `c9c6da278`） |
-| 本仓库版本标签 | `v1.0.0-rc.51-invoice` |
-| 新增功能 | 开发票（个人/企业身份认证 + 人工开具增值税普通电子发票） |
+| 本仓库版本标签 | `v1.0.0-rc.51-invoice`（发票）、`v1.0.0-rc.51-ticket`（发票 + 工单） |
+| 新增功能 | ① 开发票（个人/企业身份认证 + 人工开具增值税普通电子发票）② 工单（纯文字，用户与客服对话） |
 
-### 功能说明
+### 功能一：开发票
 
-1. **身份认证**：用户先在「发票」页提交个人认证（真实姓名 + 身份证号，校验末位校验码）或企业认证（企业名称 + 统一社会信用代码）。提交后提示用户联系客服人工审核，并显示后台配置的客服联系方式。每个用户只有一条认证记录，修改资料后重新进入待审核。
+1. **身份认证**：用户先在「发票」页提交个人认证（真实姓名 + 身份证号，校验末位校验码）或企业认证（企业名称 + 统一社会信用代码）。待审核期间页面提供「提交工单」按钮，跳到工单页并预选「发票与认证」分类。每个用户只有一条认证记录，修改资料后重新进入待审核。
 2. **开票申请**：认证通过后才能申请（服务端强制校验）。可开票订单为近 12 个月内成功的易支付（人民币）充值订单，不含订阅、Stripe/Creem/Waffo、余额支付。发票抬头固定为认证主体，申请时快照保存。每笔订单同时只能出现在一张有效申请里（数据库唯一索引保证），驳回或作废后订单释放。金额由服务端按「分」汇总。
 3. **管理端**：「发票管理」页有两个标签：
    - 开票申请：开具（填发票号 + 上传 PDF，≤10 MB，校验文件头）、驳回（填原因）、作废、下载，显示用户备注。
    - 认证审核：通过、驳回、撤销已通过的认证。
    开具/驳回/作废会给用户发邮件（未配置邮件则跳过）；以上管理操作都写入审计日志。
-4. **系统设置**：「计费 → 额度设置」新增「开票认证客服联系方式」（Option 键 `InvoiceSupportContact`）。
+
+### 功能二：工单
+
+1. **用户端**（侧边栏「个人 → 工单」）：选择分类、填写标题、可选的关联订单号/请求 ID、问题描述后提交；只支持文字，不能上传文件。工单详情以对话形式展示，用户可以继续回复或关闭。同时未关闭的工单最多 5 张；新建和回复接口限频。
+2. **状态**：待处理（等客服）→ 已回复（等用户）→ 已关闭。用户回复会变回待处理；关闭后 7 天内用户回复可以重新打开，超过 7 天需要新建。
+3. **管理端**（侧边栏「管理 → 工单管理」）：按状态、分类筛选，待处理的排在最前；侧边栏角标显示待处理数量（每分钟刷新）。客服可以回复、关闭，或写**内部备注**（用户看不到，由服务端过滤）。客服回复后按用户自己的通知设置（邮件 / Webhook / Bark / Gotify）通知用户。回复、关闭写入审计日志。
+4. **自动关闭**：主节点每 10 分钟检查一次，客服回复后用户超过设定天数未回应的工单自动关闭。
+5. **设置**：「系统设置 → 控制台内容 → 工单」可配置分类（每行一个，最多 20 个）和自动关闭天数（0–90，0 为不自动关闭，默认 7）。默认分类为英文原文，界面按语言翻译；管理员自己填写的分类名原样显示。分类名改动不影响已提交的工单（工单保存分类名快照）。
 
 ### 数据库
 
@@ -85,40 +92,44 @@
 | `invoice_verifications` | 身份认证，`user_id` 唯一索引；身份证号/信用代码为明文存储 |
 | `invoices` | 开票申请，保存抬头快照、备注、发票号、PDF 文件名 |
 | `invoice_items` | 申请与充值订单的关联，`top_up_id` 唯一索引防止重复开票 |
+| `tickets` | 工单（分类快照、状态、双方最后回复时间、关闭信息） |
+| `ticket_messages` | 工单消息，`internal` 标记内部备注 |
 
-回滚到官方镜像时这三张表会保留在库里，不影响官方版本运行。
+新增设置项（存在官方 `options` 表）：`ticket_setting.categories`、`ticket_setting.auto_close_days`。回滚到官方镜像时这些表和设置会保留在库里，不影响官方版本运行。
 
 ### 部署相关
 
 - 发票 PDF 存在本地目录：默认 `./invoices`（Docker 镜像工作目录为 `/data`，即 `/data/invoices`），可用环境变量 `INVOICE_DIR` 修改。多实例部署时需要指向所有节点共享的目录。
-- 构建方式与官方完全一致：`docker build -t new-api:v1.0.0-rc.51-invoice .`
+- 工单自动关闭只在主节点运行（与官方其他定时任务一致）。
+- 构建方式与官方完全一致：`docker build -t new-api:v1.0.0-rc.51-ticket .`
 
 ### 新增 / 修改的文件
 
 **新增文件**（官方没有，合并时不会冲突）：
 
-- 后端：`model/invoice.go`、`model/invoice_verification.go`、`model/invoice_test.go`、`controller/invoice.go`、`service/invoice.go`
-- 前端：`web/src/features/invoices/`、`web/src/routes/_authenticated/invoices/`、`web/src/routes/_authenticated/invoice-management/`
+- 发票：`model/invoice.go`、`model/invoice_verification.go`、`model/invoice_test.go`、`controller/invoice.go`、`service/invoice.go`、`web/src/features/invoices/`、`web/src/routes/_authenticated/invoices/`、`web/src/routes/_authenticated/invoice-management/`
+- 工单：`model/ticket.go`、`model/ticket_test.go`、`controller/ticket.go`、`service/ticket.go`、`setting/ticket_setting/`、`web/src/features/tickets/`、`web/src/features/system-settings/content/ticket-settings-section.tsx`、`web/src/routes/_authenticated/tickets/`、`web/src/routes/_authenticated/ticket-management/`
 
 **修改的官方文件**（合并官方新版本时需要留意，括号内为改动内容）：
 
 | 文件 | 改动 |
 | --- | --- |
-| `model/main.go` | `AutoMigrate` 列表加入 3 个发票模型 |
-| `model/option.go`、`common/constants.go` | 新增 `InvoiceSupportContact` 设置项 |
-| `router/api-router.go` | 注册 `/api/user/invoice*` 路由 |
+| `main.go` | 启动工单自动关闭任务 |
+| `model/main.go` | `AutoMigrate` 列表加入发票和工单模型 |
+| `model/option.go` | 保存设置前校验工单设置项 |
+| `router/api-router.go` | 注册 `/api/user/invoice*`、`/api/user/ticket*` 路由 |
 | `middleware/access_token_routes.go` | 为新路由声明访问令牌权限（缺少会导致 `router` 测试失败） |
 | `middleware/audit.go` | 管理操作的审计动作名 |
-| `model/task_cas_test.go` | 测试数据库迁移和清理列表加入发票表 |
-| `i18n/keys.go`、`i18n/locales/*.yaml` | 发票邮件文案 |
-| `common/log_text.zh-CN.json` | 发票相关日志的中文 |
-| `web/src/hooks/use-sidebar-data.ts`、`use-sidebar-config.ts` | 侧边栏「发票」「发票管理」入口；「发票」跟随充值模块开关 |
+| `model/task_cas_test.go` | 测试数据库迁移和清理列表加入新表 |
+| `i18n/keys.go`、`i18n/locales/*.yaml` | 发票、工单邮件文案 |
+| `common/log_text.zh-CN.json` | 新增日志的中文 |
+| `web/src/hooks/use-sidebar-data.ts`、`use-sidebar-config.ts`、`use-sidebar-view.ts`、`web/src/components/layout/types.ts` | 侧边栏「发票」「工单」「发票管理」「工单管理」入口与待处理角标；「发票」跟随充值模块开关 |
 | `web/src/features/wallet/index.tsx` | 钱包页「发票」按钮 |
-| `web/src/features/system-settings/` 下 5 个文件 | 客服联系方式设置项 |
+| `web/src/features/system-settings/content/index.tsx`、`section-registry.tsx`、`web/src/features/system-settings/types.ts` | 「控制台内容 → 工单」设置页 |
 | `web/src/features/usage-logs/lib/format.ts` | 审计日志动作文案 |
 | `web/src/i18n/locales/*.json`、`web/src/i18n/static-keys.ts` | 7 种语言翻译 |
-| `web/src/routeTree.gen.ts` | 自动生成文件，加入两个新路由 |
-| `web/src/hooks/__tests__/sidebar-config.test.tsx` | 侧边栏测试加入「发票」 |
+| `web/src/routeTree.gen.ts` | 自动生成文件，加入四个新路由 |
+| `web/src/hooks/__tests__/sidebar-config.test.tsx` | 侧边栏测试加入「发票」「工单」 |
 | `.gitignore` | 忽略 `/invoices/` |
 
 ### 合并官方新版本
@@ -134,21 +145,21 @@ git merge v1.0.0-rc.52   # 换成要合并的官方版本标签
 
 - `web/src/i18n/locales/*.json`、`common/log_text.zh-CN.json`、`i18n/locales/*.yaml`：都是键值对，冲突时**两边都保留**，注意不要出现重复的键。
 - `web/src/routeTree.gen.ts`：可直接采用官方版本，然后执行 `cd web && bun run build` 重新生成。
-- `router/api-router.go`、`middleware/access_token_routes.go`、`model/main.go`：保留官方改动，再把上表中的发票条目加回去。
+- `router/api-router.go`、`middleware/access_token_routes.go`、`model/main.go`、`main.go`：保留官方改动，再把上表中的发票、工单条目加回去。
 - 合并后运行以下检查：
 
 ```bash
-go test ./model/ ./router/ ./i18n/
-cd web && bun install && bun run typecheck && bun x vitest run src/features/invoices src/hooks/__tests__/sidebar-config.test.tsx
+go test ./model/ ./router/ ./i18n/ ./service/
+cd web && bun install && bun run typecheck && bun x vitest run src/features/invoices src/features/tickets src/hooks/__tests__/sidebar-config.test.tsx
 ```
 
-`router` 测试会检查每个接口都声明了访问令牌权限，官方新增或改名的接口如果和发票路由冲突，这里会报出来。
+`router` 测试会检查每个接口都声明了访问令牌权限，官方新增或改名的接口如果和这里的路由冲突，这里会报出来。
 
 ### 验证情况
 
-- 已通过：gofmt、go vet；`model`（含 6 个发票测试）、`router`、`i18n`、`service` 包测试；前端类型检查、改动文件的 lint 与格式检查、相关 vitest、生产构建；本机 SQLite 启动与建表。
+- 已通过：gofmt、go vet；`model`（含发票和工单测试）、`router`、`i18n`、`service`、`setting` 包测试；前端类型检查、改动文件的 lint 与格式检查、相关 vitest、生产构建；本机 SQLite 启动、建表，并重复启动验证迁移幂等。
 - 未完成：MySQL 和 PostgreSQL 上的迁移尚未实测；Docker 镜像尚未在 Linux 上实际启动过。上线前请在测试环境验证。
-- 本功能的代码由 AI（Claude）辅助编写。
+- 以上功能的代码由 AI（Claude）辅助编写。
 
 ---
 
